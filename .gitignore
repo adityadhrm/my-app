@@ -132,3 +132,7 @@ dist
 # Editor
 .idea
 .vscode
+
+# lock
+yarn.lock
+package-lock.json

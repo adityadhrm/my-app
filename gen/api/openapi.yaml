@@ -1,0 +1,342 @@
+openapi: 3.0.3
+info:
+  contact:
+    email: dharma.aditya83@gmail.com
+    name: Aditya Dharma
+    url: http://127.0.0.1:8080/
+  description: OpenAPI for My App
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://127.0.0.1:8080/
+  title: My App
+  version: 1.0.0
+externalDocs:
+  description: Contoh External Docs
+  url: http://127.0.0.1:8080/
+servers:
+- description: My App RESTful API Server V1
+  url: http://localhost:{port}/api/v1
+  variables:
+    port:
+      default: "8080"
+      description: My App Application
+      enum:
+      - "8080"
+      - "8081"
+      - "8082"
+      - "8083"
+paths:
+  /todolist:
+    get:
+      description: Get All Active Todolist
+      operationId: todolistGET
+      parameters:
+      - description: Include Done Todolist in the Result
+        explode: true
+        in: query
+        name: include_done
+        required: false
+        schema:
+          default: false
+          nullable: true
+          type: boolean
+        style: form
+      - description: Filter Todolist by Name
+        examples:
+          javascript:
+            description: Example name Javascript
+            value: Javascript
+          typescript:
+            description: Example name Typescript
+            value: Typescript
+        explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          maxLength: 100
+          minLength: 1
+          nullable: false
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                success:
+                  description: Example success get all todolist
+                  value:
+                  - id: "1"
+                    name: Javascript
+                    priority: 1
+                    tags:
+                    - Javascript
+                    - programming
+                  - id: "2"
+                    name: Typescript
+                    priority: 2
+                    tags:
+                    - Typescript
+                    - programming
+              schema:
+                $ref: '#/components/schemas/ArrayTodolist'
+          description: Success get all todolist
+      security:
+      - TodolistAuth: []
+      summary: Get All Todolist
+      tags:
+      - Todolist
+      x-eov-operation-handler: controllers/TodolistController
+    post:
+      description: Create new Todolist to Database
+      operationId: todolistPOST
+      requestBody:
+        content:
+          application/json:
+            examples:
+              javascript:
+                description: Example create Todolist Javascript
+                value:
+                  name: Javascript
+                  priority: 2
+                  tags:
+                  - Javascript
+                  - Programming
+              typescript:
+                description: Example create Todolist Typescript
+                value:
+                  name: Typescript
+                  priority: 1
+                  tags:
+                  - Typescript
+                  - Programming
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateTodolist'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              examples:
+                javascript:
+                  description: Success create javascript todolist
+                  value:
+                    id: "1"
+                    name: Javascript
+                    priority: 1
+                    tags:
+                    - Javascript
+                    - programming
+                typescript:
+                  description: Success create typescript todolist
+                  value:
+                    id: "2"
+                    name: Typescript
+                    priority: 2
+                    tags:
+                    - Typescript
+                    - programming
+              schema:
+                $ref: '#/components/schemas/Todolist'
+          description: Success create todolist
+      security:
+      - TodolistAuth: []
+      summary: Create Todolist
+      tags:
+      - Todolist
+      x-eov-operation-handler: controllers/TodolistController
+  /todolist/{todolistId}:
+    delete:
+      description: Delete Existing Todolist in Database
+      operationId: todolistTodolistIdDELETE
+      parameters:
+      - description: Todolist Id for Updated
+        examples:
+          javascript:
+            description: Sample todolist id for Javascript
+            value: 1
+          typescript:
+            description: Sample todolist id for Typescript
+            value: 2
+        explode: false
+        in: path
+        name: todolistId
+        required: true
+        schema:
+          maxLength: 100
+          minLength: 1
+          nullable: false
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Success delete todolist
+        "404":
+          content:
+            application/json:
+              example:
+                error: Todolist Not Found
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+          description: Failed delete not found todolist
+      security:
+      - TodolistAuth: []
+      summary: Delete Todolist
+      tags:
+      - Todolist
+      x-eov-operation-handler: controllers/TodolistController
+    put:
+      description: Update Existing Todolist in Database
+      operationId: todolistTodolistIdPUT
+      parameters:
+      - description: Todolist Id for Updated
+        examples:
+          javascript:
+            description: Sample todolist id for Javascript
+            value: 1
+          typescript:
+            description: Sample todolist id for Typescript
+            value: 2
+        explode: false
+        in: path
+        name: todolistId
+        required: true
+        schema:
+          maxLength: 100
+          minLength: 1
+          nullable: false
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            examples:
+              javascript:
+                description: Example create Todolist Javascript
+                value:
+                  name: Javascript
+                  priority: 2
+                  tags:
+                  - Javascript
+                  - Programming
+              typescript:
+                description: Example create Todolist Typescript
+                value:
+                  name: Typescript
+                  priority: 1
+                  tags:
+                  - Typescript
+                  - Programming
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateTodolist'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                javascript:
+                  description: Success update javascript todolist
+                  value:
+                    id: "1"
+                    name: Javascript
+                    priority: 1
+                    tags:
+                    - Javascript
+                    - programming
+                typescript:
+                  description: Success update typescript todolist
+                  value:
+                    id: "2"
+                    name: Typescript
+                    priority: 2
+                    tags:
+                    - Typescript
+                    - programming
+              schema:
+                $ref: '#/components/schemas/Todolist'
+          description: Success update todolist
+      security:
+      - TodolistAuth: []
+      summary: Update Todolist
+      tags:
+      - Todolist
+      x-eov-operation-handler: controllers/TodolistController
+components:
+  parameters:
+    TodolistId:
+      description: Todolist Id for Updated
+      examples:
+        javascript:
+          description: Sample todolist id for Javascript
+          value: 1
+        typescript:
+          description: Sample todolist id for Typescript
+          value: 2
+      explode: false
+      in: path
+      name: todolistId
+      required: true
+      schema:
+        maxLength: 100
+        minLength: 1
+        nullable: false
+        type: string
+      style: simple
+  schemas:
+    Todolist:
+      example:
+        name: name
+        id: id
+        priority: 0.8008281904610115
+        tags:
+        - tags
+        - tags
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        priority:
+          format: int32
+          type: number
+        tags:
+          items:
+            type: string
+          type: array
+      type: object
+    CreateOrUpdateTodolist:
+      example:
+        name: name
+        priority: 0.8008281904610115
+        tags:
+        - tags
+        - tags
+      properties:
+        name:
+          type: string
+        priority:
+          format: int32
+          type: number
+        tags:
+          items:
+            type: string
+          type: array
+      type: object
+    ArrayTodolist:
+      items:
+        $ref: '#/components/schemas/Todolist'
+      type: array
+    inline_response_404:
+      properties:
+        error:
+          type: string
+      type: object
+  securitySchemes:
+    TodolistAuth:
+      description: Authentication for Todolist API
+      in: header
+      name: X-API-Key
+      type: apiKey
